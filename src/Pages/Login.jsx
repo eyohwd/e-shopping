@@ -72,7 +72,7 @@ import { Home } from "@material-ui/icons";
                 
                 <Button>LOGIN</Button>
                 <Link>YOU DO NOT REMEMBER YOUR PASSWORD?</Link>
-                <Link>CREATE A NEW ACCOUNT</Link>
+                <Link>CREATE A NEW ACCOUNT NOW AND ENJOY OUR SERVICES</Link>
              </Form>
          </Wrapper>
        

@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 
+
+
 const Info = styled.div`
    opacity: 0;
    width: 100%;
@@ -26,7 +28,7 @@ min-width: 280px;
 height: 350px;
 display: flex;
 align-items: center;
-justify-content: space-betwwen;
+justify-content: center;
 background-color: #f5fbfd;
 position: relative;
 
@@ -41,9 +43,11 @@ const Circle = styled.div`
    border-radius: 50%;
    background-color: white;
    position: absolute;
+   
 `;
 const Image = styled.img`
-  height: 75%; 
+  height: 75%;
+  width : 75%; 
   z-index: 2;
 `;
 
@@ -65,6 +69,9 @@ const Icon = styled.div`
 `;
 
 const Product = ({item}) => {
+  
+  
+
   return (
     <Container>
       <Circle/>
@@ -74,7 +81,9 @@ const Product = ({item}) => {
           <ShoppingCartOutlined/> 
         </Icon>
         <Icon>
-           <SearchOutlined/> 
+          <Link to={`/product/${item._id}`}>
+           <SearchOutlined/>
+           </Link> 
         </Icon>
         <Link to="/product">
         <Icon>

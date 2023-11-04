@@ -1,6 +1,6 @@
 export const sliderItems =[
     { id:1,
-      img: "https://pngimages.in/uploads/png-thumb/png-miranda-kerr-by-andie-mikaelson-.png",
+      img: "https://freepngimg.com/thumb/jeans/6-jeans-png-image.png",
       title: "SUMMER SALE",
       desc: "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS",
       bg: "f5fafd",
@@ -26,19 +26,22 @@ export const sliderItems =[
 export const categories = [
   {
    id: 1,
-   img: "https://freepngimg.com/thumb/suit/2-suit-png-image.png",
-   title: "SUITE STYLE!",   
+   img: "https://freepngimg.com/thumb/tshirt/2-t-shirt-png-image.png",
+   title: "TOPS",
+   cat: "shirt",  
 
   },
   {
    id: 2,
-   img: "https://freepngimg.com/thumb/shoes/27428-5-nike-shoes-transparent-background.png",
-   title: "NIKE SHOE",  
+   img: "https://freepngimg.com/thumb/shoes/28530-3-nike-shoes-transparent.png",
+   title: "SHOES", 
+   cat: "shoe", 
   },
   {
      id: 3,
-     img: "https://freepngimg.com/thumb/cap/4-baseball-cap-png-image.png",
-     title: "BASEBALL CAP",
+     img: "https://freepngimg.com/thumb/backpack/4-sport-backpack-png-image.png",
+     title: "BAGS",
+     cat: "bag",
   },
 ];
 

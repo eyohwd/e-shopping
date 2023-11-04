@@ -4,7 +4,16 @@ import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import {mobile} from "../responsive"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import StripeCheckout from "react-stripe-checkout";
+import { useState, useEffect } from "react";
+import {userRequest} from "../requestMethods";
+
+
+
+const KEY = "pk_test_51O8OuiKg1MGPF9tMehdD8JMuwR2n0nEqjtkV29buAh2JfAxngcsyAFANr6DOLy3R8V3JsbWnLEtdPsGcqQF8zGwC001lOuVnvb"
+
 
 const Container = styled.div``;
 const Wrapper = styled.div`
@@ -143,6 +152,31 @@ const Button = styled.button`
 
 
 const Cart = () => {
+   const [stripeToken, setStripeToken] = useState(null)
+   const cart = useSelector((state)=>state.cart)
+   const navigate = useNavigate()
+    const onToken = (token) => {
+      setStripeToken(token)
+    }
+
+    useEffect(()=>{
+      const makeRequest = async () =>{
+         try {
+        const res = await userRequest.post("/checkout/payment", {
+         tokenId: stripeToken.id,
+         amount: cart.total * 100,
+         
+         
+        })
+        navigate("/success", {data: res.data})
+         } catch (error) {
+             console.log(error)
+         }
+        
+      }
+    stripeToken &&  makeRequest()
+    }, [stripeToken, cart.total, navigate])
+    
   return (
     <Container>
       <Navbar/>
@@ -159,51 +193,35 @@ const Cart = () => {
         </Top>
         <Bottom>
             <Info>
-                <Product>
-                    <ProductDetail>
-                        <Image src="https://freepngimg.com/thumb/shoes/28530-3-nike-shoes-transparent.png"/>
-                        <Details>
-                            <ProductName><b>Product:</b>NIKE SHOE</ProductName>
-                            <ProductId><b>ID:</b>098986</ProductId>
-                            <ProductColor color="red"/>
-                            <ProductSize><b>Size:</b>42</ProductSize>
-                        </Details>
-                    </ProductDetail>
-                    <PriceDetail>
-                        <ProductAmountContainer>
-                            <Add/>
-                            <ProductAmount>2</ProductAmount>
-                            <Remove/>
-                        </ProductAmountContainer>
-                        <ProductPrice>$ 70</ProductPrice>
-                    </PriceDetail>
-                </Product>
+                { cart.products.map((product)=>(<Product>
+<ProductDetail>
+    <Image src={product.img}/>
+    <Details>
+        <ProductName><b>Product:</b>{product.title}</ProductName>
+        <ProductId><b>ID:</b>{product._id}</ProductId>
+        <ProductColor color={product.color}/>
+        <ProductSize><b>Size:</b>{product.size}</ProductSize>
+    </Details>
+</ProductDetail>
+<PriceDetail>
+    <ProductAmountContainer>
+        <Add/>
+        <ProductAmount>{product.quantity}</ProductAmount>
+        <Remove/>
+    </ProductAmountContainer>
+    <ProductPrice>$ {product.price*product.quantity}</ProductPrice>
+</PriceDetail>
+</Product>))
+                }
+                
                 <Hr/>
-                <Product>
-                    <ProductDetail>
-                        <Image src="https://freepngimg.com/thumb/backpack/4-sport-backpack-png-image.png"/>
-                        <Details>
-                            <ProductName><b>Product:</b>SPORT BAG</ProductName>
-                            <ProductId><b>ID:</b>098986</ProductId>
-                            <ProductColor color="green"/>
-                            <ProductSize><b>Size:</b>37.5</ProductSize>
-                        </Details>
-                    </ProductDetail>
-                    <PriceDetail>
-                        <ProductAmountContainer>
-                            <Add/>
-                            <ProductAmount>2</ProductAmount>
-                            <Remove/>
-                        </ProductAmountContainer>
-                        <ProductPrice>$ 50</ProductPrice>
-                    </PriceDetail>
-                </Product>
+               
             </Info>
             <Summary>
                 <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                 <SummaryItem>
                     <SummaryItemText>subtotal</SummaryItemText>
-                    <SummaryItemPrice>$ 120</SummaryItemPrice>
+                    <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                 </SummaryItem>
                 <SummaryItem>
                     <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -215,9 +233,20 @@ const Cart = () => {
                 </SummaryItem>
                 <SummaryItem type="total">
                     <SummaryItemText >Total</SummaryItemText>
-                    <SummaryItemPrice>$ 120</SummaryItemPrice>
+                    <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                 </SummaryItem>
+                <StripeCheckout
+                name = "Shoperpoint"
+                image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcAdbnIBGS-MGfzF26AmoCyvko0WVbua1P-KN4cheriw&s"
+                 billingAddress
+                 shippingAddress
+                 description={`your total is $${cart.total} `}
+                 amount={` ${cart.total*100} `}
+                 token = {onToken}
+                 stripeKey={KEY}
+                >
                 <Button>CHECKOUT NOW</Button>
+                </StripeCheckout>
             </Summary>
         </Bottom>
       </Wrapper>

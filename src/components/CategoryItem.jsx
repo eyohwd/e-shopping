@@ -5,15 +5,31 @@ import { Link } from "react-router-dom";
 
 const Container = styled.div`
    flex: 1;
-   margin: 3px;
+   margin: 5px;
    height: 60vh;
    position: relative;
+   background-color: lightgray;
+   display: flex;
+  justify-content: center;
+  ${mobile({
+   padding: "10px",
+  
+  })}
+
 `;
 const Image = styled.img`
+
   width: 85%;
   height: 90%;
  // object-fit: cover;
- ${mobile({height: "45vh"})}
+ 
+ ${mobile({
+  height: "45vh",
+ //backgroundColor: "lightgray",
+ //display: "flex",
+//justifyContent: "center",
+
+})}
 `;
 const Info = styled.div`
   position: absolute;
@@ -45,13 +61,15 @@ const Button = styled.button`
 const CategoryItem = ({item}) => {
   return (
     <Container>
+<Link to={`/products/${item.cat}`}>
       <Image src={item.img}/>
       <Info>
         <Title>{item.title}</Title>
-        <Link to="/productlist">
+        
         <Button>SHOP NOW</Button>
-        </Link>
+        
         </Info>
+        </Link>
     </Container>
   );
 }

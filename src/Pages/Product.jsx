@@ -5,6 +5,12 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import {mobile} from "../responsive"
+import { useEffect } from "react";
+import { publicRequest } from "../requestMethods";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addProduct } from "../redux/cartRedux";
 
 const Container = styled.div`
 
@@ -109,46 +115,70 @@ const Button = styled.button`
 `;
 
 const Product = () => {
+   const location = useLocation()
+  const id = location.pathname.split("/")[2]
+   const [product, setProduct] = useState({})
+   const [quantity, setQuantity] = useState(1)
+   const [color, setColor] = useState("")
+   const [size, setSize] = useState("")
+   const dispatch = useDispatch()
+   
+
+  useEffect(()=>{
+     const getProduct = async () => {
+       const res = await publicRequest.get("/products/find/"+id)
+       setProduct(res.data)
+     }
+     getProduct()
+  }, [id])
+
+  const handleQuantity = (type) => {
+     if(type === "dec") {
+    quantity>1 && setQuantity(quantity-1)
+     } else{
+      setQuantity(quantity+1)
+     }
+  };
+
+  const handleClick = () => {
+   // update chart
+   dispatch(
+      addProduct({...product, quantity, color, size})
+   )
+  }
   return (
     <Container>
       <Navbar/>
       <Announcement/>
       <Wrapper>
         <ImgContainer>
-            <Image src="https://freepngimg.com/thumb/dress%20shirt/17-dress-shirt-png-image.png"/>
+         <Image src={product.img}/>
         </ImgContainer>
         <InfoContainer>
-            <Title>Lovely Shirt</Title>
-            <Desc>This is a to quality shirt, made from 100%
-                 cotton, neat tailoring to suit your 
-                 classy wear. Fabric is Italian quality and materail will 
-                 last longer than you can imagine.</Desc>
-            <Price>$ 20</Price>
+            <Title>{product.title}</Title>
+            <Desc>{product.desc}</Desc>
+            <Price>{`$${product.price}`}</Price>
             <FilterContainer>
                 <Filter>
                     <FilterTitle>Color</FilterTitle>
-                    <FilterColor color="black"/>
-                    <FilterColor color="darkblue"/>
-                    <FilterColor color="gray"/>
+                    {product.color?.map((c)=>(<FilterColor key={c} color={c} onClick={()=>setColor(c)}/>))}
+                    
+                    
                 </Filter>
                 <Filter>
-                    <FilterTitle>Size</FilterTitle>
-                <FilterSize>
-                    <FilterSizeOption>XS</FilterSizeOption>
-                    <FilterSizeOption>S</FilterSizeOption>
-                    <FilterSizeOption>M</FilterSizeOption>
-                    <FilterSizeOption>L</FilterSizeOption>
-                    <FilterSizeOption>XL</FilterSizeOption>
-                </FilterSize>
+                    <FilterTitle >Size</FilterTitle>
+                <FilterSize onClick={(e)=>setSize(e.target.value)}>
+                  {product.size?.map((s)=>(<FilterSizeOption key={s} >{s}</FilterSizeOption>))}
+               </FilterSize>
                 </Filter>
             </FilterContainer>
             <AddContainer>
             <AmountContainer>
-                <Remove/>
-                <Amount>1</Amount>
-                <Add/>
+                <Remove onClick={()=>handleQuantity("dec")}/>
+                <Amount>{quantity}</Amount>
+                <Add onClick={()=>handleQuantity("inc")} />
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button onClick={handleClick}>ADD TO CART</Button>
         </AddContainer>
         </InfoContainer>
         
